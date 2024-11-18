@@ -1,10 +1,11 @@
-import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:student_app/database/db_model.dart';
 import 'package:student_app/providers/students_provider.dart';
+import 'package:student_app/utils.dart';
 
 class EditStudentPage extends StatefulWidget {
   final StudentDBModel student;
@@ -38,18 +39,14 @@ class _EditStudentPageState extends State<EditStudentPage> {
     division = widget.student.division;
   }
 
-  Future<void> _pickImage() async {
-    final XFile? image = await imagePicker.pickImage(
-      source: ImageSource.gallery,
-      maxWidth: 800,
-      maxHeight: 800,
+  Future<void> pickImage() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+      withData: true,
     );
-
-    if (image != null) {
-      final File imageFile = File(image.path);
-      final image1 = await imageFile.readAsBytes();
+    if (result != null && result.files.isNotEmpty) {
       setState(() {
-        imageData = image1;
+        imageData = result.files.first.bytes;
       });
     }
   }
@@ -77,7 +74,6 @@ class _EditStudentPageState extends State<EditStudentPage> {
 
       try {
         context.read<StudentsProvider>().updateStudent(updatedStudent);
-        // await updateStudent(updatedStudent);
         Navigator.of(context).pop();
       } catch (e) {
         print("Error updating student: $e");
@@ -113,7 +109,7 @@ class _EditStudentPageState extends State<EditStudentPage> {
             child: Column(
               children: [
                 InkWell(
-                  onTap: _pickImage,
+                  onTap: pickImage,
                   child: CircleAvatar(
                     radius: 80,
                     backgroundImage:
@@ -169,18 +165,7 @@ class _EditStudentPageState extends State<EditStudentPage> {
                               decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
                                   contentPadding: EdgeInsets.all(10)),
-                              items: [
-                                '1',
-                                '2',
-                                '3',
-                                '4',
-                                '5',
-                                '6',
-                                '7',
-                                '8',
-                                '9',
-                                '10'
-                              ].map((String classValue) {
+                              items: Utils.classNumber.map((String classValue) {
                                 return DropdownMenuItem<String>(
                                   value: classValue,
                                   child: Text(classValue),
@@ -208,19 +193,7 @@ class _EditStudentPageState extends State<EditStudentPage> {
                                 decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     contentPadding: EdgeInsets.all(8)),
-                                items: [
-                                  'A',
-                                  'B',
-                                  'C',
-                                  'D',
-                                  'E',
-                                  'F',
-                                  'G',
-                                  'H',
-                                  'I',
-                                  'J',
-                                  'K',
-                                ].map((String division) {
+                                items: Utils.division.map((String division) {
                                   return DropdownMenuItem<String>(
                                     value: division,
                                     child: Text(division),

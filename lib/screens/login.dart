@@ -14,9 +14,6 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Login'),
-      // ),
       backgroundColor: Colors.grey[200],
       body: Center(
         child: SingleChildScrollView(
@@ -86,10 +83,6 @@ class LoginPage extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        // SharedPreferences prefs =
-                        //     await SharedPreferences.getInstance();
-                        // final storedSchoolId = prefs.getString('schoolId');
-                        // final storedPassword = prefs.getString('password');
                         final schoolId = context.read<LoginProvider>().schoolId;
                         final password = context.read<LoginProvider>().password;
 

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -22,19 +23,17 @@ class _AddStudentPageState extends State<AddStudentPage> {
   final formKey = GlobalKey<FormState>();
   String? classNumber;
   String? division;
-
-  final ImagePicker picker = ImagePicker();
   Uint8List? imageData;
+  final ImagePicker picker = ImagePicker();
   Future<void> pickImage() async {
-    final XFile? image = await picker.pickImage(
-      source: ImageSource.gallery,
-      maxWidth: 800,
-      maxHeight: 800,
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+      withData: true,
     );
-
-    if (image != null) {
-      final File imageFile = File(image.path);
-      imageData = await imageFile.readAsBytes();
+    if (result != null && result.files.isNotEmpty) {
+      setState(() {
+        imageData = result.files.first.bytes;
+      });
     }
   }
 

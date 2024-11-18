@@ -2,16 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:student_app/providers/login_provider.dart';
 
+// ignore: must_be_immutable
 class SchoolProfileScreen extends StatelessWidget {
-  SchoolProfileScreen({super.key});
-
-  String? schoolId;
-
-  String? schoolName;
-
-  final List<String> title = ['School ID', 'School Name'];
-
-  late List<String> details;
+  const SchoolProfileScreen({super.key});
 
   final TextStyle titleStyle = const TextStyle(
     fontSize: 16,

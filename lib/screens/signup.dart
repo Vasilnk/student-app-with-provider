@@ -122,7 +122,6 @@ class SignUpPage extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          // storeUserData();
                           context.read<LoginProvider>().setLogin(
                               _schoolIdController.text,
                               _passwordController.text,
