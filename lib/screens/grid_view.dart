@@ -1,140 +1,131 @@
 import 'package:flutter/material.dart';
-import 'package:student_app/database/db_functions.dart';
+import 'package:provider/provider.dart';
 import 'package:student_app/database/db_model.dart';
+import 'package:student_app/providers/students_provider.dart';
 import 'package:student_app/screens/edit_page.dart';
-import 'package:student_app/screens/student_profile.dart';
 
-class GridViewBuilder extends StatefulWidget {
+class GridViewBuilder extends StatelessWidget {
   final List<StudentDBModel> students;
   const GridViewBuilder(this.students, {super.key});
 
   @override
-  State<GridViewBuilder> createState() => _GridViewBuilderState();
-}
-
-class _GridViewBuilderState extends State<GridViewBuilder> {
-  @override
   Widget build(BuildContext context) {
-    final students = widget.students;
     return GridView.builder(
+      padding: const EdgeInsets.all(15),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 10.0,
         mainAxisSpacing: 10.0,
-        childAspectRatio: 1,
+        childAspectRatio: 0.9,
       ),
       itemCount: students.length,
-      padding: const EdgeInsets.all(15),
       itemBuilder: (context, index) {
         final student = students[index];
 
         return Container(
           decoration: BoxDecoration(
-              color: Colors.green[200],
-              borderRadius: BorderRadius.circular(20)),
-          child: InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ProfilePage(student)),
-              );
-            },
-            child: GridTile(
-              header: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            color: Colors.green[200],
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const SizedBox(height: 10),
+              CircleAvatar(
+                radius: 40,
+                backgroundImage:
+                    student.image != null ? MemoryImage(student.image!) : null,
+                child: student.image == null ? const Icon(Icons.person) : null,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                student.name,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              Text('Class: ${student.classNumber}'),
+              const Spacer(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  const SizedBox(height: 20),
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundImage: student.image != null
-                        ? MemoryImage(student.image!)
-                        : null,
-                    child:
-                        student.image == null ? const Icon(Icons.person) : null,
+                  IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (ctx) => EditStudentPage(student: student),
+                        ),
+                      );
+                    },
+                    icon: const Icon(
+                      Icons.edit,
+                      color: Colors.blue,
+                    ),
                   ),
-                  const SizedBox(height: 10),
-                  Text(
-                    student.name,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  IconButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: const Text('Confirm Delete'),
+                          content: const Text(
+                              'Are you sure you want to delete this student?'),
+                          actions: [
+                            TextButton(
+                              child: const Text('No'),
+                              onPressed: () {
+                                Navigator.of(ctx).pop();
+                              },
+                            ),
+                            TextButton(
+                              child: const Text('Yes'),
+                              onPressed: () {
+                                if (student.id != null) {
+                                  try {
+                                    context
+                                        .read<StudentsProvider>()
+                                        .deleteStudent(student.id!);
+                                    Navigator.of(ctx).pop();
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              '${student.name} is deleted.')),
+                                    );
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              'Failed to delete student.')),
+                                    );
+                                    throw Exception(
+                                        "Error deleting student: $e");
+                                  }
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'Invalid student ID. Cannot delete.')),
+                                  );
+                                  throw Exception("Invalid student ID");
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    icon: const Icon(
+                      Icons.delete,
+                      color: Color.fromARGB(253, 184, 55, 46),
+                    ),
                   ),
-                  Text('Class: ${student.classNumber}'),
                 ],
               ),
-              child: Align(
-                alignment: Alignment.bottomRight,
-                child: IconButton(
-                  icon: const Icon(Icons.more_vert),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Choose an action'),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              InkWell(
-                                child: const ListTile(
-                                  leading: Icon(Icons.edit, color: Colors.blue),
-                                  title: Text('Edit'),
-                                ),
-                                onTap: () {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (ctx) =>
-                                          EditStudentPage(student: student),
-                                    ),
-                                  );
-                                },
-                              ),
-                              const Divider(),
-                              InkWell(
-                                child: const ListTile(
-                                  leading:
-                                      Icon(Icons.delete, color: Colors.red),
-                                  title: Text('Delete'),
-                                ),
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                  showDialog(
-                                    context: context,
-                                    builder: (ctx) {
-                                      return AlertDialog(
-                                        title: const Text('Confirm Delete'),
-                                        content: const Text(
-                                            'Are you sure you want to delete this student?'),
-                                        actions: [
-                                          TextButton(
-                                            child: const Text('No'),
-                                            onPressed: () {
-                                              Navigator.of(ctx).pop();
-                                            },
-                                          ),
-                                          TextButton(
-                                            child: const Text('Yes'),
-                                            onPressed: () {
-                                              if (student.id != null) {
-                                                deleteStudent(student.id!);
-                                                Navigator.of(ctx).pop();
-                                              }
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-            ),
+              const SizedBox(height: 10),
+            ],
           ),
         );
       },

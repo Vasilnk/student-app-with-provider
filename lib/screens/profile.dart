@@ -1,33 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import 'package:student_app/providers/login_provider.dart';
 
-class SchoolProfileScreen extends StatefulWidget {
-  const SchoolProfileScreen({super.key});
+class SchoolProfileScreen extends StatelessWidget {
+  SchoolProfileScreen({super.key});
 
-  @override
-  _SchoolProfileScreenState createState() => _SchoolProfileScreenState();
-}
-
-class _SchoolProfileScreenState extends State<SchoolProfileScreen> {
   String? schoolId;
+
   String? schoolName;
+
   final List<String> title = ['School ID', 'School Name'];
+
   late List<String> details;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadSchoolData();
-  }
-
-  void _loadSchoolData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      schoolId = prefs.getString('schoolId') ?? 'N/A';
-      schoolName = prefs.getString('schoolName') ?? 'N/A';
-      details = [schoolId!, schoolName!];
-    });
-  }
 
   final TextStyle titleStyle = const TextStyle(
     fontSize: 16,
@@ -45,6 +29,7 @@ class _SchoolProfileScreenState extends State<SchoolProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
+        centerTitle: true,
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -80,21 +65,32 @@ class _SchoolProfileScreenState extends State<SchoolProfileScreen> {
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
                       children: [
-                        for (int i = 0; i < title.length; i++) ...[
-                          Row(
+                        Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(title[i], style: titleStyle),
-                              Text(details[i], style: detailStyle),
-                            ],
-                          ),
-                          if (i < title.length - 1)
-                            const Divider(
-                              color: Colors.grey,
-                              height: 30,
-                              thickness: 1,
-                            ),
-                        ],
+                              Text("School ID", style: titleStyle),
+                              Consumer(
+                                  builder:
+                                      (context, LoginProvider value, child) =>
+                                          Text(value.schoolId ?? "N/A",
+                                              style: detailStyle)),
+                            ]),
+                        const Divider(
+                          color: Colors.grey,
+                          height: 30,
+                          thickness: 1,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("School Name", style: titleStyle),
+                            Consumer(
+                                builder:
+                                    (context, LoginProvider value, child) =>
+                                        Text(value.schoolName ?? "N/A",
+                                            style: detailStyle)),
+                          ],
+                        ),
                       ],
                     ),
                   ),

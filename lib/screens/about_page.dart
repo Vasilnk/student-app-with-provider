@@ -15,10 +15,7 @@ class AboutPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // App Logo
-
               SizedBox(height: 20),
-              // App Description
               Text(
                 'About Our School Management App',
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
@@ -29,7 +26,6 @@ class AboutPage extends StatelessWidget {
                 style: TextStyle(fontSize: 16),
               ),
               SizedBox(height: 20),
-              // Key Features
               Text(
                 'Key Features',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -44,7 +40,6 @@ class AboutPage extends StatelessWidget {
                 style: TextStyle(fontSize: 16),
               ),
               SizedBox(height: 20),
-              // Benefits
               Text(
                 'Why Use This App?',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -55,7 +50,6 @@ class AboutPage extends StatelessWidget {
                 style: TextStyle(fontSize: 16),
               ),
               SizedBox(height: 20),
-              // Developer Information
               Text(
                 'Developer Information',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -68,7 +62,6 @@ class AboutPage extends StatelessWidget {
                 style: TextStyle(fontSize: 16),
               ),
               SizedBox(height: 20),
-              // Closing Remarks
               Center(
                 child: Text(
                   '"Simplifying school management for a better tomorrow!"',

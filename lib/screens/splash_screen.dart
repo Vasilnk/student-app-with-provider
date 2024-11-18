@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import 'package:student_app/providers/login_provider.dart';
 import 'package:student_app/screens/home_page.dart';
-import 'package:student_app/screens/login.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -18,12 +18,11 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _checkIfLoggedIn() async {
-    await Future.delayed(const Duration(seconds: 1));
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final schoolId = prefs.getString('schoolId');
-    final password = prefs.getString('password');
+    await Future.delayed(const Duration(seconds: 3));
+    await context.read<LoginProvider>().checkIfLoggedIn();
+    final isLoggedIn = context.read<LoginProvider>().isLoggedIn;
 
-    if (schoolId != null && password != null) {
+    if (isLoggedIn) {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const HomePage()),
@@ -32,7 +31,7 @@ class _SplashScreenState extends State<SplashScreen> {
     } else {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const LoginPage()),
+        MaterialPageRoute(builder: (context) => const HomePage()),
       );
     }
   }

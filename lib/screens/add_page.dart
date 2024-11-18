@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
-
 import 'package:image_picker/image_picker.dart';
-import 'package:student_app/database/db_functions.dart';
+import 'package:provider/provider.dart';
 import 'package:student_app/database/db_model.dart';
+import 'package:student_app/providers/students_provider.dart';
+import 'package:student_app/utils.dart';
 
 class AddStudentPage extends StatefulWidget {
   const AddStudentPage({super.key});
@@ -20,9 +20,9 @@ class _AddStudentPageState extends State<AddStudentPage> {
   final inputGuardian = TextEditingController();
   final inputContact = TextEditingController();
   final formKey = GlobalKey<FormState>();
-
   String? classNumber;
   String? division;
+
   final ImagePicker picker = ImagePicker();
   Uint8List? imageData;
   Future<void> pickImage() async {
@@ -60,7 +60,7 @@ class _AddStudentPageState extends State<AddStudentPage> {
           division: division!);
 
       try {
-        await addStudent(newStudent);
+        context.read<StudentsProvider>().addStudent(newStudent);
 
         Navigator.of(context).pop();
       } catch (e) {
@@ -87,7 +87,8 @@ class _AddStudentPageState extends State<AddStudentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Student'),
+        title: const Text('Add Student', style: TextStyle(color: Colors.white)),
+        centerTitle: true,
       ),
       body: ListView(
         children: [
@@ -154,18 +155,7 @@ class _AddStudentPageState extends State<AddStudentPage> {
                               decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
                                   contentPadding: EdgeInsets.all(10)),
-                              items: [
-                                '1',
-                                '2',
-                                '3',
-                                '4',
-                                '5',
-                                '6',
-                                '7',
-                                '8',
-                                '9',
-                                '10'
-                              ].map((String classValue) {
+                              items: Utils.classNumber.map((String classValue) {
                                 return DropdownMenuItem<String>(
                                   value: classValue,
                                   child: Text(classValue),
@@ -194,18 +184,7 @@ class _AddStudentPageState extends State<AddStudentPage> {
                               decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
                                   contentPadding: EdgeInsets.all(8)),
-                              items: [
-                                'A',
-                                'B',
-                                'C',
-                                'D',
-                                'E',
-                                'F',
-                                'G',
-                                'H',
-                                'I',
-                                'J'
-                              ].map((String divisionValue) {
+                              items: Utils.division.map((String divisionValue) {
                                 return DropdownMenuItem<String>(
                                   value: divisionValue,
                                   child: Text(divisionValue),

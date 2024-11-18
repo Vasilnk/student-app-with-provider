@@ -1,22 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:student_app/database/db_functions.dart';
+import 'package:provider/provider.dart';
 import 'package:student_app/database/db_model.dart';
+import 'package:student_app/providers/students_provider.dart';
 import 'package:student_app/screens/edit_page.dart';
 import 'package:student_app/screens/student_profile.dart';
 
-class ListViewBuilder extends StatefulWidget {
+class ListViewBuilder extends StatelessWidget {
   final List<StudentDBModel> students;
   const ListViewBuilder(this.students, {super.key});
 
   @override
-  State<ListViewBuilder> createState() => _ListViewBuilderState();
-}
-
-class _ListViewBuilderState extends State<ListViewBuilder> {
-  @override
   Widget build(BuildContext context) {
-    final List<StudentDBModel> students = widget.students;
-
     return ListView.separated(
       itemBuilder: (context, index) {
         final student = students[index];
@@ -81,11 +75,32 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                             child: const Text('Yes'),
                             onPressed: () {
                               if (student.id != null) {
-                                deleteStudent(student.id!);
+                                try {
+                                  context
+                                      .read<StudentsProvider>()
+                                      .deleteStudent(student.id!);
+                                  Navigator.of(ctx).pop();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                            '${student.name} is deleted.')),
+                                  );
+                                } catch (e) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content:
+                                            Text('Failed to delete student.')),
+                                  );
+                                  throw Exception("Error deleting student: $e");
+                                }
                               } else {
-                                print("cannot delete there is problem");
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          'Invalid student ID. Cannot delete.')),
+                                );
+                                throw Exception("Invalid student ID");
                               }
-                              Navigator.of(ctx).pop();
                             },
                           ),
                         ],
@@ -94,7 +109,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                   },
                   icon: const Icon(
                     Icons.delete,
-                    color: Colors.red,
+                    color: Color.fromARGB(253, 184, 55, 46),
                   ),
                 ),
               ],

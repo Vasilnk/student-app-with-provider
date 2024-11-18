@@ -1,33 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:student_app/screens/about_page.dart';
+import 'package:provider/provider.dart';
+import 'package:student_app/providers/login_provider.dart';
 import 'package:student_app/screens/logout.dart';
-import 'package:student_app/screens/privacy_policy.dart';
-import 'package:student_app/screens/profile.dart';
+import 'package:student_app/utils.dart';
 
 class DrowerScreen extends StatelessWidget {
-  DrowerScreen({super.key, required this.schoolName});
-  final String schoolName;
+  DrowerScreen({
+    super.key,
+  });
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-
-  final List<Map<String, dynamic>> sidePanelItems = [
-    {
-      'icon': Icons.person,
-      'title': 'Profile',
-      'screen': const SchoolProfileScreen()
-    },
-    {
-      'icon': Icons.logout_outlined,
-      'title': 'Log Out',
-    },
-    {
-      'icon': Icons.privacy_tip,
-      'title': 'Privacy and Policy',
-      'screen': const PrivacyPolicyPage()
-    },
-    {'icon': Icons.info, 'title': 'About', 'screen': const AboutPage()}
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -48,13 +30,18 @@ class DrowerScreen extends StatelessWidget {
                     backgroundImage: AssetImage('assets/images/school.jpeg'),
                   ),
                   const SizedBox(height: 20),
-                  Text(
-                    schoolName,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
+                  Consumer(
+                    builder: (BuildContext context, LoginProvider value,
+                        Widget? child) {
+                      return Text(
+                        value.schoolName ?? 'No name added',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -65,7 +52,7 @@ class DrowerScreen extends StatelessWidget {
             Expanded(
               child: ListView.builder(
                 itemBuilder: (context, index) {
-                  final item = sidePanelItems[index];
+                  final item = Utils.sidePanelItems[index];
                   return ListTile(
                     leading: Icon(item['icon']),
                     title: Text(item['title']),
@@ -83,7 +70,7 @@ class DrowerScreen extends StatelessWidget {
                     },
                   );
                 },
-                itemCount: sidePanelItems.length,
+                itemCount: Utils.sidePanelItems.length,
               ),
             ),
             const SizedBox(

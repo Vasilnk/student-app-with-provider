@@ -1,35 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import 'package:student_app/providers/login_provider.dart';
 import 'package:student_app/screens/home_page.dart';
 
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+class SignUpPage extends StatelessWidget {
+  SignUpPage({super.key});
 
-  @override
-  _SignUpPageState createState() => _SignUpPageState();
-}
-
-class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
   final _schoolIdController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _nameController = TextEditingController();
 
-  Future<void> _storeUserData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('schoolId', _schoolIdController.text);
-    await prefs.setString('password', _passwordController.text);
-    await prefs.setString('schoolName', _nameController.text);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      appBar: AppBar(
-        title: const Text('Sign Up'),
-      ),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
@@ -136,7 +122,11 @@ class _SignUpPageState extends State<SignUpPage> {
                     ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          _storeUserData();
+                          // storeUserData();
+                          context.read<LoginProvider>().setLogin(
+                              _schoolIdController.text,
+                              _passwordController.text,
+                              _nameController.text);
                           Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(

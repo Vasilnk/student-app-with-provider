@@ -2,8 +2,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:student_app/database/db_functions.dart';
+import 'package:provider/provider.dart';
 import 'package:student_app/database/db_model.dart';
+import 'package:student_app/providers/students_provider.dart';
 
 class EditStudentPage extends StatefulWidget {
   final StudentDBModel student;
@@ -46,7 +47,10 @@ class _EditStudentPageState extends State<EditStudentPage> {
 
     if (image != null) {
       final File imageFile = File(image.path);
-      imageData = await imageFile.readAsBytes();
+      final image1 = await imageFile.readAsBytes();
+      setState(() {
+        imageData = image1;
+      });
     }
   }
 
@@ -72,7 +76,8 @@ class _EditStudentPageState extends State<EditStudentPage> {
       );
 
       try {
-        await updateStudent(updatedStudent);
+        context.read<StudentsProvider>().updateStudent(updatedStudent);
+        // await updateStudent(updatedStudent);
         Navigator.of(context).pop();
       } catch (e) {
         print("Error updating student: $e");
@@ -97,7 +102,9 @@ class _EditStudentPageState extends State<EditStudentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Student'),
+        centerTitle: true,
+        title:
+            const Text('Edit Student', style: TextStyle(color: Colors.white)),
       ),
       body: ListView(
         children: [

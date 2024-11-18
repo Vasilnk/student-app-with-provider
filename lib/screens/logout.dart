@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:student_app/providers/login_provider.dart';
 import 'package:student_app/screens/login.dart';
 
 logoutFunction(BuildContext context) {
@@ -27,9 +29,10 @@ logoutFunction(BuildContext context) {
 }
 
 void confirmLogout(BuildContext context) async {
+  context.read<LoginProvider>().logout();
   Navigator.pushAndRemoveUntil(
     context,
-    MaterialPageRoute(builder: (context) => const LoginPage()),
+    MaterialPageRoute(builder: (context) => LoginPage()),
     (Route<dynamic> route) => false,
   );
 }
