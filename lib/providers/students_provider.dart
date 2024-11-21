@@ -24,5 +24,5 @@ class StudentsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  StudentDBModel? getStudent(String id) => studentBox.get(id);
+  StudentDBModel? getStudent(int id) => studentBox.get(id);
 }

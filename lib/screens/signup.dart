@@ -134,7 +134,8 @@ class SignUpPage extends StatelessWidget {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.deepPurple,
+                        backgroundColor:
+                            const Color.fromARGB(255, 81, 112, 105),
                         minimumSize: const Size(double.infinity, 50.0),
                       ),
                       child: const Text(

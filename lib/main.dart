@@ -13,7 +13,6 @@ Future<void> main() async {
     Hive.registerAdapter(StudentDBModelAdapter());
   }
   await Hive.openBox<StudentDBModel>('students');
-  // await Hive.openBox<Uint8List>('image');
   runApp(const MyApp());
 }
 
@@ -30,10 +29,8 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         theme: ThemeData(
             appBarTheme: const AppBarTheme(
-          // centerTitle: true,
-
+          centerTitle: true,
           color: Color.fromARGB(255, 81, 112, 105),
-          // color: Color.fromARGB(255, 226, 224, 224),
           titleTextStyle: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 25,

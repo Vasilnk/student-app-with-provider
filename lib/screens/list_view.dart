@@ -26,7 +26,7 @@ class ListViewBuilder extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ProfilePage(student)));
+                      builder: (context) => ProfilePage(student.id)));
             },
             title: Text(
               student.name,

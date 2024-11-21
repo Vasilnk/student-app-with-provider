@@ -30,7 +30,11 @@ class Utils {
   ];
 
   static List<Map<String, dynamic>> sidePanelItems = [
-    {'icon': Icons.person, 'title': 'Profile', 'screen': SchoolProfileScreen()},
+    {
+      'icon': Icons.person,
+      'title': 'Profile',
+      'screen': const SchoolProfileScreen()
+    },
     {
       'icon': Icons.logout_outlined,
       'title': 'Log Out',

@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:student_app/database/db_model.dart';
+import 'package:student_app/providers/students_provider.dart';
 
 class ProfilePage extends StatelessWidget {
-  final StudentDBModel student;
+  final int? id;
 
-  const ProfilePage(this.student, {super.key});
+  const ProfilePage(this.id, {super.key});
 
   @override
   Widget build(BuildContext context) {
+    final StudentDBModel? student =
+        context.read<StudentsProvider>().getStudent(id!);
+
     final List<String> details = [
-      student.name,
+      student!.name,
       student.age,
       student.classNumber,
       student.division,
